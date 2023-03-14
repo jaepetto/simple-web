@@ -18,7 +18,11 @@ jobs:
       run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag jaepetto/simple-web:${{ env.IMAGE_TAG }}
+    - name: Also tag the image as latest
+      run: docker tag jaepetto/simple-web:${{ env.IMAGE_TAG }} jaepetto/simple-web:latest
     - name: Login to Docker Hub
       run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u jaepetto --password-stdin
-    - name: Push the Docker image
+    - name: Push the Docker image with the timestamp tag
       run: docker push jaepetto/simple-web:${{ env.IMAGE_TAG }}
+    - name: Push the Docker image with the latest tag
+      run: docker push jaepetto/simple-web:latest
